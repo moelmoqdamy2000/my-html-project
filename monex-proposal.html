@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONEX × Dr. Sayed Fayad — Digital Growth Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07060b;
+  --bg2:#0d0b14;
+  --panel:#12101c;
+  --panel-brd:rgba(255,255,255,.08);
+  --purple:#8b5cf6;
+  --magenta:#e879f9;
+  --teal:#2dd4bf;
+  --gold:#e8c988;
+  --text:#f3f0fa;
+  --muted:#9891ab;
+  --muted2:#6d6580;
+  --grad: linear-gradient(120deg,var(--purple),var(--magenta) 55%, var(--teal));
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{background:var(--bg);}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Cairo',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+.en{font-family:'Space Grotesk',sans-serif;}
+[dir="rtl"]{direction:rtl;text-align:right;}
+::selection{background:var(--purple);color:#fff;}
+
+/* ---------- noise + bg orbs ---------- */
+.noise{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.035;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.orb{position:fixed;border-radius:50%;filter:blur(120px);z-index:0;pointer-events:none;}
+.orb1{width:600px;height:600px;background:var(--purple);opacity:.18;top:-10%;left:-10%;}
+.orb2{width:500px;height:500px;background:var(--teal);opacity:.13;bottom:5%;right:-10%;}
+.orb3{width:400px;height:400px;background:var(--magenta);opacity:.10;top:40%;left:40%;}
+
+/* ---------- cursor ---------- */
+.cursor{position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;background:var(--text);z-index:9999;pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s,opacity .25s;}
+.cursor-ring{position:fixed;top:0;left:0;width:36px;height:36px;border-radius:50%;border:1px solid rgba(243,240,250,.4);z-index:9998;pointer-events:none;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s,opacity .3s;}
+.cursor.hover{width:6px;height:6px;background:var(--purple);}
+.cursor-ring.hover{width:64px;height:64px;border-color:var(--purple);background:rgba(139,92,246,.08);}
+@media(max-width:900px){.cursor,.cursor-ring{display:none;}body{cursor:auto;}}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+#loader .mark{font-family:'Space Grotesk';font-size:15px;letter-spacing:.5em;color:var(--muted);}
+#loader .pulse-wrap{width:280px;height:60px;}
+#loader svg{width:100%;height:100%;}
+#loader path{fill:none;stroke:var(--purple);stroke-width:2;stroke-dasharray:600;stroke-dashoffset:600;animation:draw 1.8s ease-in-out infinite;}
+@keyframes draw{50%{stroke-dashoffset:0;}100%{stroke-dashoffset:-600;}}
+#loader .pct{font-family:'Space Grotesk';font-size:12px;color:var(--muted2);letter-spacing:.2em;}
+
+/* ---------- progress ---------- */
+#progress-wrap{position:fixed;top:0;left:0;width:100%;height:3px;z-index:500;background:rgba(255,255,255,.04);}
+#progress-bar{height:100%;width:0%;background:var(--grad);}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;width:100%;z-index:400;padding:22px 5%;display:flex;align-items:center;justify-content:space-between;transition:background .4s,backdrop-filter .4s,padding .4s;}
+nav.scrolled{background:rgba(7,6,11,.75);backdrop-filter:blur(16px);padding:14px 5%;border-bottom:1px solid var(--panel-brd);}
+.logo-mark{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:15px;letter-spacing:.05em;}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:var(--grad);animation:beat 1.6s ease-in-out infinite;}
+@keyframes beat{0%,100%{transform:scale(1);}30%{transform:scale(1.5);}}
+.nav-links{display:flex;gap:34px;list-style:none;font-family:'Space Grotesk';font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.nav-links a{color:inherit;text-decoration:none;transition:color .3s;position:relative;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{font-family:'Space Grotesk';font-size:12px;letter-spacing:.05em;border:1px solid var(--panel-brd);padding:9px 20px;border-radius:99px;color:var(--text);text-decoration:none;transition:.3s;}
+.nav-cta:hover{background:var(--text);color:var(--bg);}
+@media(max-width:1000px){.nav-links{display:none;}}
+
+/* ---------- sections generic ---------- */
+section{position:relative;z-index:1;padding:150px 8%;max-width:1400px;margin:0 auto;}
+.eyebrow{font-family:'Space Grotesk';font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--purple);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--purple);}
+h1,h2,h3{font-weight:800;line-height:1.15;}
+.section-title{font-size:clamp(32px,4.4vw,58px);margin-bottom:20px;letter-spacing:-.01em;}
+.section-lead{color:var(--muted);font-size:18px;max-width:680px;line-height:1.9;margin-bottom:60px;}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.reveal{opacity:0;transform:translateY(40px);}
+.card{background:var(--panel);border:1px solid var(--panel-brd);border-radius:20px;padding:32px;position:relative;overflow:hidden;transition:.4s;}
+.card:hover{border-color:rgba(139,92,246,.4);transform:translateY(-4px);}
+.pill{display:inline-block;font-family:'Space Grotesk';font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:99px;border:1px solid var(--panel-brd);color:var(--muted);}
+
+/* ---------- divider pulse ---------- */
+.pulse-divider{width:100%;height:50px;margin:0 auto;opacity:.5;}
+.pulse-divider svg{width:100%;height:100%;}
+.pulse-divider path{fill:none;stroke:url(#pulseGrad);stroke-width:1.5;}
+
+/* ================= HERO ================= */
+#cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding-top:0;}
+.hero-badge{font-family:'Space Grotesk';font-size:12px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:30px;border:1px solid var(--panel-brd);padding:8px 22px;border-radius:99px;}
+#cover h1{font-size:clamp(46px,9vw,128px);letter-spacing:-.02em;line-height:1.02;}
+#cover .sub{font-family:'Space Grotesk';margin-top:26px;font-size:15px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;}
+#cover .doctor-name{font-size:clamp(20px,2.4vw,30px);color:var(--teal);margin-top:14px;font-weight:600;}
+.scroll-cue{position:absolute;bottom:40px;display:flex;flex-direction:column;align-items:center;gap:10px;font-family:'Space Grotesk';font-size:11px;letter-spacing:.2em;color:var(--muted2);text-transform:uppercase;}
+.scroll-cue .line{width:1px;height:40px;background:linear-gradient(var(--purple),transparent);animation:scrolldown 1.8s infinite;}
+@keyframes scrolldown{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}51%{transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+/* ================= WELCOME ================= */
+#welcome .letter{background:var(--panel);border:1px solid var(--panel-brd);border-radius:28px;padding:70px;position:relative;}
+#welcome .letter::before{content:'”';position:absolute;top:10px;right:40px;font-size:140px;color:rgba(139,92,246,.15);font-family:Georgia,serif;}
+#welcome p{font-size:22px;line-height:2.1;color:#e7e2f2;position:relative;z-index:1;}
+#welcome .sign{margin-top:40px;font-family:'Space Grotesk';color:var(--muted);font-size:13px;letter-spacing:.1em;}
+@media(max-width:800px){#welcome .letter{padding:34px;}#welcome p{font-size:17px;}}
+
+/* ================= STATS ROW ================= */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--panel-brd);border:1px solid var(--panel-brd);border-radius:20px;overflow:hidden;margin-top:50px;}
+.stat-cell{background:var(--bg2);padding:36px 24px;text-align:center;}
+.stat-num{font-family:'Space Grotesk';font-size:clamp(28px,3.2vw,42px);font-weight:700;}
+.stat-label{color:var(--muted);font-size:13px;margin-top:8px;}
+@media(max-width:800px){.stat-row{grid-template-columns:repeat(2,1fr);}}
+
+/* ================= DOCTOR ANALYSIS ================= */
+.audit-grid{display:grid;grid-template-columns:1.1fr 1.5fr;gap:50px;align-items:start;}
+.audit-mock{background:linear-gradient(180deg,#141122,#0b0a12);border:1px solid var(--panel-brd);border-radius:24px;overflow:hidden;position:sticky;top:120px;}
+.audit-mock .cover-img{height:190px;background:linear-gradient(135deg,#1c2733,#0c1015);position:relative;}
+.audit-mock .cover-img::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(20,184,166,.25),transparent 60%);}
+.audit-mock .profile-row{display:flex;align-items:center;gap:14px;padding:20px 22px;margin-top:-34px;position:relative;}
+.audit-mock .avatar{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3b5bff,#e0245e);border:3px solid #0b0a12;}
+.audit-mock .name{font-weight:700;font-size:15px;}
+.audit-mock .meta{font-size:11px;color:var(--muted);font-family:'Space Grotesk';margin-top:4px;}
+.audit-list{display:flex;flex-direction:column;gap:14px;}
+.audit-item{background:var(--panel);border:1px solid var(--panel-brd);border-radius:16px;padding:22px 26px;display:flex;gap:18px;align-items:flex-start;}
+.audit-item .tag{flex-shrink:0;font-family:'Space Grotesk';font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:8px;margin-top:2px;}
+.tag-strength{background:rgba(45,212,191,.15);color:var(--teal);}
+.tag-gap{background:rgba(232,201,136,.15);color:var(--gold);}
+.audit-item p{color:#d8d3e6;line-height:1.9;font-size:15.5px;}
+.audit-item strong{color:var(--text);}
+@media(max-width:900px){.audit-grid{grid-template-columns:1fr;}.audit-mock{position:relative;top:0;}}
+
+/* ================= SWOT ================= */
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.swot-card{border-radius:22px;padding:36px;border:1px solid var(--panel-brd);}
+.swot-card h3{font-family:'Space Grotesk';font-size:14px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;}
+.swot-card ul{list-style:none;display:flex;flex-direction:column;gap:12px;}
+.swot-card li{padding-right:20px;position:relative;color:#d8d3e6;line-height:1.8;font-size:15px;}
+[dir="rtl"] .swot-card li::before{content:'—';position:absolute;right:0;color:inherit;opacity:.6;}
+.swot-s{background:radial-gradient(circle at 0% 0%,rgba(45,212,191,.12),transparent 60%);}
+.swot-s h3{color:var(--teal);}
+.swot-w{background:radial-gradient(circle at 0% 0%,rgba(232,201,136,.1),transparent 60%);}
+.swot-w h3{color:var(--gold);}
+.swot-o{background:radial-gradient(circle at 0% 0%,rgba(139,92,246,.14),transparent 60%);}
+.swot-o h3{color:var(--purple);}
+.swot-t{background:radial-gradient(circle at 0% 0%,rgba(232,72,110,.12),transparent 60%);}
+.swot-t h3{color:#f16a8a;}
+@media(max-width:800px){.swot-grid{grid-template-columns:1fr;}}
+
+/* ================= PERSONAS / AUDIENCE ================= */
+.persona-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+.persona-card{padding:0;overflow:hidden;}
+.persona-head{padding:30px 30px 0;display:flex;justify-content:space-between;align-items:flex-start;}
+.persona-avatar{width:52px;height:52px;border-radius:16px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:18px;color:#0b0a12;}
+.persona-card .body{padding:22px 30px 30px;}
+.persona-card h4{font-size:20px;margin-bottom:4px;}
+.persona-card .role{font-family:'Space Grotesk';color:var(--muted);font-size:12px;letter-spacing:.05em;margin-bottom:16px;}
+.persona-card p{color:#d8d3e6;line-height:1.85;font-size:15px;}
+.persona-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+@media(max-width:800px){.persona-grid{grid-template-columns:1fr;}}
+
+/* ================= JOURNEY ================= */
+.journey-track{position:relative;padding:40px 0;}
+.journey-line{position:absolute;top:50%;left:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--panel-brd) 10%,var(--panel-brd) 90%,transparent);}
+.journey-steps{display:flex;gap:0;overflow-x:auto;padding-bottom:20px;scrollbar-width:none;}
+.journey-steps::-webkit-scrollbar{display:none;}
+.journey-step{flex:0 0 220px;padding:0 18px;position:relative;text-align:center;}
+.journey-dot{width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--purple);margin:0 auto 22px;position:relative;z-index:2;}
+.journey-step .num{font-family:'Space Grotesk';color:var(--muted2);font-size:12px;margin-bottom:10px;}
+.journey-step h4{font-size:16px;margin-bottom:8px;}
+.journey-step p{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* ================= POSITIONING / TONE ================= */
+.big-quote{font-size:clamp(26px,3.4vw,44px);font-weight:700;line-height:1.5;max-width:1000px;}
+.tone-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:50px;}
+.tone-card{text-align:center;padding:30px 18px;}
+.tone-card .icon{width:42px;height:42px;margin:0 auto 16px;border-radius:12px;background:var(--grad);opacity:.9;}
+.tone-card h4{font-size:15px;margin-bottom:8px;}
+.tone-card p{font-size:12.5px;color:var(--muted);line-height:1.7;}
+@media(max-width:900px){.tone-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* ================= IDENTITY ================= */
+.identity-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.palette-row{display:flex;gap:14px;margin-top:30px;}
+.swatch{flex:1;height:110px;border-radius:16px;position:relative;display:flex;align-items:flex-end;padding:14px;font-family:'Space Grotesk';font-size:11px;color:rgba(255,255,255,.85);}
+.type-sample{margin-top:36px;}
+.type-sample .en-sample{font-family:'Space Grotesk';font-size:44px;font-weight:700;}
+.type-sample .ar-sample{font-family:'Cairo';font-size:34px;font-weight:800;margin-top:10px;}
+.type-sample .label{font-family:'Space Grotesk';font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:6px;}
+@media(max-width:900px){.identity-grid{grid-template-columns:1fr;}}
+
+/* ================= CONTENT ENGINE ================= */
+.pillar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.pillar-card{padding:26px 22px;}
+.pillar-card .n{font-family:'Space Grotesk';font-size:12px;color:var(--purple);margin-bottom:14px;}
+.pillar-card h4{font-size:15.5px;margin-bottom:8px;line-height:1.5;}
+.pillar-card p{font-size:12.5px;color:var(--muted);line-height:1.7;}
+@media(max-width:900px){.pillar-grid{grid-template-columns:repeat(2,1fr);}}
+
+.mix-chart{display:flex;flex-direction:column;gap:16px;margin-top:50px;}
+.mix-row{display:grid;grid-template-columns:160px 1fr 60px;align-items:center;gap:18px;}
+.mix-label{font-size:14px;color:#d8d3e6;font-family:'Space Grotesk';}
+.mix-bar-bg{height:10px;background:var(--panel);border-radius:99px;overflow:hidden;}
+.mix-bar{height:100%;width:0;border-radius:99px;background:var(--grad);}
+.mix-val{font-family:'Space Grotesk';color:var(--muted);font-size:13px;text-align:left;}
+
+.hook-scroller{display:flex;gap:16px;overflow-x:auto;padding:10px 0 20px;scrollbar-width:none;}
+.hook-scroller::-webkit-scrollbar{display:none;}
+.hook-card{flex:0 0 300px;background:var(--panel);border:1px solid var(--panel-brd);border-radius:18px;padding:24px;}
+.hook-card .idx{font-family:'Space Grotesk';font-size:11px;color:var(--muted2);margin-bottom:10px;}
+.hook-card p{font-size:16px;line-height:1.7;}
+
+.cta-cloud{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;}
+.cta-chip{font-family:'Cairo';font-size:14px;padding:10px 20px;border-radius:99px;border:1px solid var(--panel-brd);color:#d8d3e6;background:var(--panel);}
+
+/* ================= CALENDAR ================= */
+.cal-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-top:40px;}
+.cal-day{aspect-ratio:1;border-radius:10px;background:var(--panel);border:1px solid var(--panel-brd);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.25s;position:relative;}
+.cal-day:hover{border-color:var(--purple);background:rgba(139,92,246,.12);transform:scale(1.05);}
+.cal-day .d{font-family:'Space Grotesk';font-size:13px;color:var(--muted);}
+.cal-day .dot{width:5px;height:5px;border-radius:50%;margin-top:5px;}
+.cal-detail{margin-top:30px;background:var(--panel);border:1px solid var(--panel-brd);border-radius:20px;padding:32px;display:none;}
+.cal-detail.active{display:block;}
+.cal-detail .row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.cal-detail .k{font-family:'Space Grotesk';font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);width:110px;flex-shrink:0;padding-top:3px;}
+.cal-detail .v{color:#e7e2f2;font-size:15px;line-height:1.8;flex:1;}
+@media(max-width:900px){.cal-grid{grid-template-columns:repeat(6,1fr);}}
+@media(max-width:560px){.cal-grid{grid-template-columns:repeat(5,1fr);}}
+
+/* ================= PRODUCTION ================= */
+.tabs{display:flex;gap:8px;margin-bottom:34px;flex-wrap:wrap;}
+.tab-btn{font-family:'Space Grotesk';font-size:12px;letter-spacing:.05em;padding:11px 22px;border-radius:99px;border:1px solid var(--panel-brd);color:var(--muted);background:transparent;cursor:pointer;transition:.3s;text-transform:uppercase;}
+.tab-btn.active{background:var(--text);color:var(--bg);border-color:var(--text);}
+.tab-panel{display:none;}
+.tab-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.check-item{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--panel-brd);border-radius:14px;padding:18px 20px;}
+.check-item .num{font-family:'Space Grotesk';color:var(--purple);font-size:13px;flex-shrink:0;}
+.check-item p{font-size:14.5px;color:#d8d3e6;line-height:1.7;}
+.folder-tree{font-family:'Space Grotesk';font-size:14px;color:var(--muted);line-height:2.4;background:var(--panel);border:1px solid var(--panel-brd);border-radius:16px;padding:26px 30px;}
+.folder-tree .f{color:var(--teal);}
+
+/* ================= GROWTH / FUNNEL ================= */
+.funnel{display:flex;flex-direction:column;gap:10px;max-width:640px;margin:40px auto 0;}
+.funnel-step{background:var(--panel);border:1px solid var(--panel-brd);border-radius:14px;padding:18px 26px;text-align:center;position:relative;}
+.funnel-step .t{font-weight:700;font-size:15px;}
+.funnel-step .s{font-size:12.5px;color:var(--muted);margin-top:4px;}
+.funnel-arrow{text-align:center;color:var(--muted2);font-size:14px;margin:-2px 0;}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:20px;}
+.kpi-card{padding:24px 18px;text-align:center;}
+.kpi-card .ic{font-family:'Space Grotesk';font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.kpi-card .bignum{font-family:'Space Grotesk';font-size:26px;font-weight:700;}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+
+.wa-steps{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:36px;}
+.wa-step{background:var(--panel);border:1px solid var(--panel-brd);border-radius:14px;padding:18px 12px;text-align:center;}
+.wa-step .n{font-family:'Space Grotesk';font-size:11px;color:var(--teal);margin-bottom:10px;}
+.wa-step p{font-size:12.5px;line-height:1.6;color:#d8d3e6;}
+@media(max-width:900px){.wa-steps{grid-template-columns:repeat(3,1fr);}}
+
+/* ================= ROADMAP ================= */
+.road-track{position:relative;padding-right:30px;}
+[dir="rtl"] .road-track::before{content:'';position:absolute;right:8px;top:0;bottom:0;width:1px;background:var(--panel-brd);}
+.road-item{position:relative;padding-right:44px;margin-bottom:36px;}
+.road-item::before{content:'';position:absolute;right:0;top:6px;width:17px;height:17px;border-radius:50%;background:var(--bg);border:2px solid var(--purple);}
+.road-item .month{font-family:'Space Grotesk';font-size:12px;color:var(--purple);margin-bottom:8px;letter-spacing:.08em;}
+.road-item h4{font-size:19px;margin-bottom:8px;}
+.road-item p{color:var(--muted);font-size:14.5px;line-height:1.8;max-width:640px;}
+
+/* ================= CLOSE ================= */
+#close{text-align:center;padding-bottom:220px;}
+#close h2{font-size:clamp(34px,5.5vw,70px);}
+.close-btns{display:flex;gap:16px;justify-content:center;margin-top:40px;flex-wrap:wrap;}
+.btn-primary{font-family:'Space Grotesk';background:var(--grad);color:#0b0a12;padding:17px 38px;border-radius:99px;text-decoration:none;font-weight:700;font-size:14px;}
+.btn-ghost{font-family:'Space Grotesk';border:1px solid var(--panel-brd);color:var(--text);padding:17px 38px;border-radius:99px;text-decoration:none;font-size:14px;}
+footer{text-align:center;padding:40px;color:var(--muted2);font-family:'Space Grotesk';font-size:11px;letter-spacing:.1em;text-transform:uppercase;border-top:1px solid var(--panel-brd);}
+
+@media(max-width:700px){
+  section{padding:100px 6%;}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .wa-steps{grid-template-columns:repeat(2,1fr)}
+  .tab-panel.active{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div id="loader">
+  <div class="mark en">MONEX</div>
+  <div class="pulse-wrap"><svg viewBox="0 0 280 60"><path d="M0,30 L60,30 L75,10 L90,50 L105,30 L280,30"/></svg></div>
+  <div class="pct en" id="loadPct">0%</div>
+</div>
+
+<div id="progress-wrap"><div id="progress-bar"></div></div>
+
+<nav id="nav">
+  <div class="logo-mark"><span class="logo-dot"></span> MONEX</div>
+  <ul class="nav-links">
+    <li><a href="#analysis">Analysis</a></li>
+    <li><a href="#strategy">Strategy</a></li>
+    <li><a href="#content">Content</a></li>
+    <li><a href="#calendar">Calendar</a></li>
+    <li><a href="#production">Production</a></li>
+    <li><a href="#growth">Growth</a></li>
+  </ul>
+  <a href="#close" class="nav-cta en">View Proposal</a>
+</nav>
+
+<svg width="0" height="0"><defs><linearGradient id="pulseGrad" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="#8b5cf6"/><stop offset="55%" stop-color="#e879f9"/><stop offset="100%" stop-color="#2dd4bf"/>
+</linearGradient></defs></svg>
+
+<!-- ============ COVER ============ -->
+<section id="cover">
+  <div class="hero-badge en reveal">Digital Growth Proposal · 2026</div>
+  <h1 class="reveal">MONEX<span class="grad-text"> × </span>Cardiology</h1>
+  <div class="sub en reveal">A 90-Day Digital Presence & Patient-Trust System</div>
+  <div class="doctor-name reveal">لـ. د. السيد فياض — استشاري جراحة القلب والصدر</div>
+  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<!-- ============ WELCOME ============ -->
+<section id="welcome" dir="rtl">
+  <div class="eyebrow en">01 · Welcome Letter</div>
+  <h2 class="section-title reveal">رسالة <span class="grad-text">افتتاحية</span></h2>
+  <div class="letter reveal">
+    <p>
+      عزيزي د. سيد فياض،<br><br>
+      يسعدنا في MONEX أن نضع بين يديك هذه الوثيقة، ليست كخطة تسويقية تقليدية، بل كنظام متكامل لبناء علامتك الشخصية الرقمية كأحد أبرز جرّاحي القلب والصدر. مهمتنا هي تحويل سنوات خبرتك العلمية ومهارتك داخل غرفة العمليات إلى حضور رقمي يشعر به كل مريض قبل أن يجلس أمامك: حضور يبعث الطمأنينة، يوضّح المعرفة، ويحوّل المتابعة إلى ثقة، والثقة إلى حجز فعلي.
+      نحن لا نبيع محتوى، نحن نبني نظام ثقة رقمي متكامل — من أول ريلز يشاهده مريض، وحتى لحظة خروجه من عيادتك وهو يوصي بك لعائلته.
+    </p>
+    <div class="sign en">MONEX Creative &amp; Growth Team — بنتنفس AI</div>
+  </div>
+
+  <div class="stat-row reveal">
+    <div class="stat-cell"><div class="stat-num en grad-text" data-count="90">0</div><div class="stat-label">يوم تنفيذ أولي</div></div>
+    <div class="stat-cell"><div class="stat-num en grad-text" data-count="67">0</div><div class="stat-label">محتوى شهري (فيديو + تصميم)</div></div>
+    <div class="stat-cell"><div class="stat-num en grad-text" data-count="8">0</div><div class="stat-label">محاور محتوى استراتيجية</div></div>
+    <div class="stat-cell"><div class="stat-num en grad-text" data-count="12">0</div><div class="stat-label">شهر رؤية نمو</div></div>
+  </div>
+</section>
+
+<div class="pulse-divider"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M0,25 L400,25 L430,5 L460,45 L490,25 L1000,25"/></svg></div>
+
+<!-- ============ EXEC SUMMARY ============ -->
+<section id="summary" dir="rtl">
+  <div class="eyebrow en">02 · Executive Summary</div>
+  <h2 class="section-title reveal">الملخص <span class="grad-text">التنفيذي</span></h2>
+  <p class="section-lead reveal">
+    تقوم استراتيجيتنا على ثلاثة محاور مترابطة: <strong style="color:#e7e2f2">بناء الثقة</strong> من خلال محتوى إنساني وشفاف، <strong style="color:#e7e2f2">نشر المعرفة الطبية</strong> بأسلوب مبسّط يخاطب المريض لا الطبيب الزميل، و<strong style="color:#e7e2f2">تحويل الاهتمام إلى حجوزات فعلية</strong> عبر مسار رقمي واضح من أول مشاهدة وحتى غرفة الانتظار. يُبنى ذلك على أربع ركائز تنفيذية: إنتاج فيديو احترافي بمعايير سينمائية، جلسات تصوير شهرية منظمة (Batch Content)، هوية بصرية موحدة تعكس الثقة الطبية، وإدارة أداء مبنية على بيانات حقيقية لا تخمين.
+  </p>
+  <div class="pillar-grid">
+    <div class="card reveal"><div class="n en">Pillar 01</div><h4>الثقة أولاً</h4><p>كل قطعة محتوى تُبنى لتُظهر الكفاءة العلمية والإنسانية معًا، بلا مبالغة تسويقية تُضعف المصداقية الطبية.</p></div>
+    <div class="card reveal"><div class="n en">Pillar 02</div><h4>تعليم لا ترويج</h4><p>المريض يبحث عن إجابات، لا عن إعلانات. المحتوى التثقيفي هو أقوى أداة تحويل في التسويق الطبي.</p></div>
+    <div class="card reveal"><div class="n en">Pillar 03</div><h4>نظام لا منشورات عشوائية</h4><p>تقويم تنفيذي، SOPs واضحة، وجلسات تصوير مجدولة — الاستمرارية هي ما يبني الخوارزمية والثقة معًا.</p></div>
+    <div class="card reveal"><div class="n en">Pillar 04</div><h4>قياس وتحسين مستمر</h4><p>كل شهر تقرير، كل تقرير قرار. لا نكرر ما لا يعمل، ونضاعف ما يحقق نتائج.</p></div>
+  </div>
+</section>
+
+<!-- ============ DOCTOR ANALYSIS ============ -->
+<section id="analysis" dir="rtl">
+  <div class="eyebrow en">03 · Current Presence Audit</div>
+  <h2 class="section-title reveal">تحليل <span class="grad-text">الحضور الرقمي الحالي</span></h2>
+  <p class="section-lead reveal">قمنا بمراجعة صفحة حضرتك الحالية على فيسبوك بعين استراتيجية، بعيدًا عن الانطباع السطحي — إليك ما يعمل بالفعل، وما يمثل فرصة نمو حقيقية.</p>
+
+  <div class="audit-grid">
+    <div class="audit-mock reveal">
+      <div class="cover-img"></div>
+      <div class="profile-row">
+        <div class="avatar"></div>
+        <div>
+          <div class="name en">Dr. Sayed Fayad</div>
+          <div class="meta">Cardiothoracic Surgeon · 2.3K Followers</div>
+        </div>
+      </div>
+      <div style="padding:0 22px 24px;">
+        <div class="pill">جراحة القلب والصدر</div>
+      </div>
+    </div>
+
+    <div class="audit-list">
+      <div class="audit-item reveal"><span class="tag tag-strength en">Strength</span><p><strong>هوية بصرية للشعار قوية:</strong> شعار القلب بتدرج الأزرق والأحمر يحمل رمزية طبية أنيقة ومباشرة، ويصلح كأساس فعلي للهوية البصرية الكاملة.</p></div>
+      <div class="audit-item reveal"><span class="tag tag-strength en">Strength</span><p><strong>محتوى ميداني أصيل:</strong> صور من داخل غرفة العمليات تمنح مصداقية فورية لا يمكن تصنيعها — وهي أصل تسويقي نادر يجب استثماره بذكاء.</p></div>
+      <div class="audit-item reveal"><span class="tag tag-gap en">Gap</span><p><strong>غياب استراتيجية محتوى منتظمة:</strong> الصفحة تعمل كأرشيف صور لا كنظام نشر مستمر يبني علاقة مع الجمهور أسبوعيًا.</p></div>
+      <div class="audit-item reveal"><span class="tag tag-gap en">Gap</span><p><strong>لا يوجد مسار تحويل واضح:</strong> لا توجد دعوة صريحة لإجراء (CTA) توجّه الزائر نحو الحجز أو التواصل عبر واتساب.</p></div>
+      <div class="audit-item reveal"><span class="tag tag-gap en">Gap</span><p><strong>غلاف الصفحة يفتقد لرسالة:</strong> صورة الغلاف قوية بصريًا لكنها لا تنقل تموضعًا واضحًا أو وعدًا للمريض المحتمل خلال أول 3 ثوانٍ.</p></div>
+      <div class="audit-item reveal"><span class="tag tag-gap en">Gap</span><p><strong>غياب المحتوى التثقيفي القصير:</strong> لا يوجد Reels تشرح الأعراض أو تصحح المفاهيم الخاطئة — وهو الشكل الأعلى انتشارًا في المحتوى الطبي حاليًا.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARKET ============ -->
+<section id="market" dir="rtl">
+  <div class="eyebrow en">04 · Medical Market Analysis</div>
+  <h2 class="section-title reveal">قراءة <span class="grad-text">السوق الطبي</span></h2>
+  <p class="section-lead reveal">
+    يشهد التسويق الطبي نموًا متسارعًا مع اعتماد أغلب المرضى على السوشيال ميديا كخطوة أولى قبل اختيار الطبيب — أبحاثنا الداخلية وخبرة MONEX في السوق المصري والخليجي تؤكد أن أكثر من 70% من قرارات اختيار طبيب متخصص تمر بمرحلة "بحث رقمي" قبل أي تواصل مباشر. في تخصص دقيق كجراحة القلب والصدر، لا يبحث الجمهور عن عروض أو أسعار، بل عن <strong style="color:#e7e2f2">الخبرة، الطمأنينة، والوضوح</strong> — لذلك يكون المحتوى التعليمي والإنساني، لا الترويجي، هو محور بناء العلامة.
+  </p>
+  <div class="swot-grid">
+    <div class="swot-card swot-s reveal"><h3 class="en">Strengths</h3><ul><li>خبرة علمية عميقة وتخصص دقيق عالي القيمة.</li><li>مصداقية طبيعية مبنية على الكفاءة الفعلية لا التسويق.</li><li>محتوى ميداني حصري (غرفة عمليات، حالات حقيقية) يصعب تقليده.</li></ul></div>
+    <div class="swot-card swot-w reveal"><h3 class="en">Weaknesses</h3><ul><li>غياب خطة محتوى ثابتة ومجدولة.</li><li>هوية بصرية غير موحدة عبر المنشورات.</li><li>عدم وجود قناة تواصل مباشر منظمة (واتساب / نموذج حجز).</li></ul></div>
+    <div class="swot-card swot-o reveal"><h3 class="en">Opportunities</h3><ul><li>طلب متزايد على محتوى طبي موثوق باللغة العربية.</li><li>ضعف حضور المنافسين المباشرين في نفس التخصص رقميًا.</li><li>إمكانية بناء مجتمع مرضى وعائلاتهم عبر محتوى الوعي القلبي.</li></ul></div>
+    <div class="swot-card swot-t reveal"><h3 class="en">Threats</h3><ul><li>انتشار معلومات طبية مضللة تنافس المحتوى الموثوق.</li><li>دخول منافسين جدد بميزانيات إعلانية أعلى.</li><li>حساسية التخصص الطبي تجاه أي خطأ في الرسالة أو الالتزام الأخلاقي.</li></ul></div>
+  </div>
+</section>
+
+<!-- ============ AUDIENCE / PERSONAS ============ -->
+<section id="strategy" dir="rtl">
+  <div class="eyebrow en">05 · Target Audience &amp; Personas</div>
+  <h2 class="section-title reveal">من <span class="grad-text">نخاطب؟</span></h2>
+  <p class="section-lead reveal">الفئة الأساسية: رجال وسيدات من 40 إلى 70 عامًا، من ذوي الأمراض المزمنة أو من لديهم تاريخ عائلي مع أمراض القلب. الفئة الثانوية: أبناء المرضى المسؤولون عن اتخاذ القرار، الأطباء المحوّلون (Referral Network)، وشركات التأمين الطبي.</p>
+  <div class="persona-grid">
+    <div class="card persona-card reveal">
+      <div class="persona-head"><div class="persona-avatar en">أ</div><span class="pill">58 سنة</span></div>
+      <div class="body"><h4>أحمد</h4><div class="role en">Primary Persona · Patient</div>
+      <p>يعاني من أعراض مبكرة ويشعر بالقلق. لا يبحث عن مصطلحات طبية معقدة، بل عن طبيب "يشرح حالته ببساطة" ويمنحه شعورًا بالأمان قبل اتخاذ قرار العلاج.</p>
+      <div class="persona-tags"><span class="cta-chip">يفضّل الفيديو القصير</span><span class="cta-chip">حساس تجاه الوقت</span></div></div>
+    </div>
+    <div class="card persona-card reveal">
+      <div class="persona-head"><div class="persona-avatar en">س</div><span class="pill">34 سنة</span></div>
+      <div class="body"><h4>سارة</h4><div class="role en">Secondary Persona · Decision Maker</div>
+      <p>تبحث عن أفضل جرّاح لعلاج والدها. تعتمد بشكل كبير على المحتوى التثقيفي وتقييمات جوجل وقصص المرضى السابقين قبل حجز الاستشارة.</p>
+      <div class="persona-tags"><span class="cta-chip">تقرأ المراجعات</span><span class="cta-chip">تشارك المحتوى مع العائلة</span></div></div>
+    </div>
+  </div>
+
+  <div class="pulse-divider" style="margin-top:70px"><svg viewBox="0 0 1000 50" preserveAspectRatio="none"><path d="M0,25 L400,25 L430,5 L460,45 L490,25 L1000,25"/></svg></div>
+
+  <div style="margin-top:70px">
+    <div class="eyebrow en">06 · Customer Journey</div>
+    <h3 class="reveal" style="font-size:28px;margin-bottom:40px;">من المشاهدة الأولى <span class="grad-text">إلى التوصية</span></h3>
+    <div class="journey-track"><div class="journey-line"></div>
+      <div class="journey-steps">
+        <div class="journey-step reveal"><div class="journey-dot"></div><div class="num en">01</div><h4>مشاهدة Reel</h4><p>محتوى تثقيفي يوقف التمرير خلال أول 3 ثوانٍ.</p></div>
+        <div class="journey-step reveal"><div class="journey-dot"></div><div class="num en">02</div><h4>زيارة الصفحة</h4><p>يتأكد من الهوية والمصداقية عبر الصور والتقييمات.</p></div>
+        <div class="journey-step reveal"><div class="journey-dot"></div><div class="num en">03</div><h4>قصص النجاح</h4><p>يقرأ تجارب مرضى سابقين تعزز الثقة قبل التواصل.</p></div>
+        <div class="journey-step reveal"><div class="journey-dot"></div><div class="num en">04</div><h4>تواصل واتساب</h4><p>مسار محدد ومباشر بلا تعقيد أو انتظار طويل.</p></div>
+        <div class="journey-step reveal"><div class="journey-dot"></div><div class="num en">05</div><h4>الحجز</h4><p>تأكيد فوري وتذكير قبل الموعد.</p></div>
+        <div class="journey-step reveal"><div class="journey-dot"></div><div class="num en">06</div><h4>الزيارة</h4><p>تجربة تتطابق مع الوعد الذي قدّمه المحتوى.</p></div>
+        <div class="journey-step reveal"><div class="journey-dot"></div><div class="num en">07</div><h4>المتابعة</h4><p>رسالة اطمئنان بعد الزيارة تعزز الولاء.</p></div>
+        <div class="journey-step reveal"><div class="journey-dot"></div><div class="num en">08</div><h4>التوصية</h4><p>مريض راضٍ يتحول لأداة تسويق حقيقية لعائلته.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ POSITIONING / TONE / IDENTITY ============ -->
+<section id="positioning" dir="rtl">
+  <div class="eyebrow en">07 · Brand Positioning</div>
+  <p class="big-quote reveal">"هذا الطبيب هو الشخص الذي <span class="grad-text">أثق به</span> إذا احتجت إلى جراحة قلب."</p>
+  <p class="section-lead reveal" style="margin-top:24px">هذا هو الانطباع الأول الذي نبنيه حول اسم د. سيد فياض، عبر أربع ركائز: الثقة، الخبرة، الإنسانية، والتثقيف المستمر.</p>
+
+  <div class="eyebrow en" style="margin-top:80px">08 · Tone of Voice</div>
+  <h3 class="reveal" style="font-size:28px;margin-bottom:10px;">كيف <span class="grad-text">نتحدث؟</span></h3>
+  <p class="section-lead reveal" style="margin-bottom:10px">لغة عربية بسيطة وواضحة، خالية من المبالغة، تشرح المفاهيم الطبية بأمثلة يفهمها الجميع، مع الابتعاد التام عن أي ادعاءات تسويقية غير مناسبة للسياق الطبي.</p>
+  <div class="tone-grid">
+    <div class="card tone-card reveal"><div class="icon"></div><h4>بسيط لا مبسّط</h4><p>نشرح بدقة علمية بلغة يفهمها غير المتخصص دون التنازل عن الصحة الطبية.</p></div>
+    <div class="card tone-card reveal"><div class="icon"></div><h4>إنساني أولًا</h4><p>الطبيب إنسان قبل أن يكون جرّاحًا — نُظهر القصة خلف الكفاءة.</p></div>
+    <div class="card tone-card reveal"><div class="icon"></div><h4>هادئ وواثق</h4><p>لا نُثير القلق لجذب الانتباه، نطمئن ونوضّح بثقة مهنية.</p></div>
+    <div class="card tone-card reveal"><div class="icon"></div><h4>ملتزم أخلاقيًا</h4><p>احترام خصوصية المريض وعدم استغلال الحالات الحساسة تسويقيًا.</p></div>
+  </div>
+
+  <div class="eyebrow en" style="margin-top:90px">09 · Visual Identity</div>
+  <h3 class="reveal" style="font-size:28px;margin-bottom:40px;">الهوية <span class="grad-text">البصرية</span></h3>
+  <div class="identity-grid">
+    <div>
+      <p class="section-lead reveal" style="margin-bottom:0">نبني الهوية على دمج لغة MONEX البصرية (تدرج البنفسجي التقني) مع لغة الثقة الطبية (الأزرق الداكن والتركواز) المستوحاة من شعار العيادة نفسه — نتيجة هوية عصرية موثوقة في آن واحد.</p>
+      <div class="palette-row reveal">
+        <div class="swatch en" style="background:#0f0d14;color:#fff">Navy #0F0D14</div>
+        <div class="swatch en" style="background:#8b5cf6;color:#0b0a12">Purple #8B5CF6</div>
+        <div class="swatch en" style="background:#2dd4bf;color:#0b0a12">Teal #2DD4BF</div>
+        <div class="swatch en" style="background:#f4f2fa;color:#0b0a12">White #F4F2FA</div>
+      </div>
+    </div>
+    <div class="type-sample reveal">
+      <div class="en-sample">Aa Cardiology</div>
+      <div class="label en">Space Grotesk — UI &amp; Data</div>
+      <div class="ar-sample">الثقة أولاً</div>
+      <div class="label en">Cairo — Arabic Voice</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTENT ENGINE ============ -->
+<section id="content" dir="rtl">
+  <div class="eyebrow en">10 · Content Engine</div>
+  <h2 class="section-title reveal">محرك <span class="grad-text">المحتوى</span></h2>
+  <p class="section-lead reveal">كل قطعة محتوى تحقق هدفًا واحدًا على الأقل: التثقيف، بناء الثقة، زيادة الوصول، زيادة التفاعل، أو زيادة الحجوزات. نظام مبني على 8 محاور متكاملة:</p>
+
+  <div class="pillar-grid" id="pillarGrid"></div>
+
+  <h3 class="reveal" style="font-size:24px;margin-top:70px;margin-bottom:6px;">التوزيع <span class="grad-text">الشهري</span></h3>
+  <p class="section-lead reveal" style="margin-bottom:0">مزيج محتوى متوازن بين الأشكال القصيرة سريعة الانتشار والأشكال الطويلة التي تبني عمق الثقة.</p>
+  <div class="mix-chart" id="mixChart"></div>
+
+  <h3 class="reveal" style="font-size:24px;margin-top:70px;margin-bottom:20px;">صيغة <span class="grad-text">الريلز</span></h3>
+  <div class="card reveal" style="text-align:center;padding:34px;">
+    <div class="en" style="font-family:'Space Grotesk';font-size:15px;letter-spacing:.05em;color:#e7e2f2;">Hook <span style="color:var(--purple)">→</span> Problem <span style="color:var(--purple)">→</span> Explanation <span style="color:var(--purple)">→</span> Solution <span style="color:var(--purple)">→</span> CTA</div>
+  </div>
+
+  <h3 class="reveal" style="font-size:24px;margin-top:60px;margin-bottom:20px;">مكتبة <span class="grad-text">الـ Hooks</span></h3>
+  <div class="hook-scroller" id="hookScroller"></div>
+
+  <h3 class="reveal" style="font-size:24px;margin-top:60px;margin-bottom:20px;">مكتبة <span class="grad-text">الـ CTA</span></h3>
+  <div class="cta-cloud" id="ctaCloud"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:60px;">
+    <div class="card reveal">
+      <h4 style="font-size:17px;margin-bottom:14px;">📷 محتوى التصوير</h4>
+      <p style="color:var(--muted);line-height:1.9;font-size:14.5px;">العيادة، الفريق الطبي، الأجهزة، يوم في حياة الدكتور، تجهيز الحالات قبل العمليات، وصور بورتريه احترافية بإضاءة طبيعية.</p>
+    </div>
+    <div class="card reveal">
+      <h4 style="font-size:17px;margin-bottom:14px;">🎨 التصميم الجرافيكي</h4>
+      <p style="color:var(--muted);line-height:1.9;font-size:14.5px;">Quotes طبية، Infographics توعوية، Carousel تعليمي، Medical Tips سريعة، وحملات توعية بمناسبات صحية عالمية.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CALENDAR ============ -->
+<section id="calendar" dir="rtl">
+  <div class="eyebrow en">11 · 90-Day Execution Calendar</div>
+  <h2 class="section-title reveal">التقويم <span class="grad-text">التنفيذي</span></h2>
+  <p class="section-lead reveal">يعتمد التنفيذ على نظام Batch Content — تصوير مركّز عدة أيام شهريًا، ثم توزيع المحتوى يوميًا مع متابعة الأداء والتعديل المستمر. عيّنة تفاعلية من الشهر الأول — اضغط على أي يوم لعرض التفاصيل الكاملة.</p>
+  <div class="cal-grid" id="calGrid"></div>
+  <div class="cal-detail" id="calDetail"></div>
+</section>
+
+<!-- ============ PRODUCTION ============ -->
+<section id="production" dir="rtl">
+  <div class="eyebrow en">12 · Production Playbook</div>
+  <h2 class="section-title reveal">دليل <span class="grad-text">الإنتاج</span></h2>
+  <p class="section-lead reveal">مكتبة محتوى احترافية قابلة لإعادة الاستخدام، بجودة ثابتة وهوية بصرية موحدة عبر 3 أيام تصوير شهريًا.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active en" data-tab="equipment">Equipment</button>
+    <button class="tab-btn en" data-tab="shotlist">Shot List</button>
+    <button class="tab-btn en" data-tab="sop">SOPs</button>
+    <button class="tab-btn en" data-tab="quality">Quality Checklist</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-equipment">
+    <div class="check-item"><span class="num en">CAM</span><p>Sony A7IV أو Canon R6 — جودة تصوير 4K ثابتة الألوان.</p></div>
+    <div class="check-item"><span class="num en">LENS</span><p>عدسات 24-70mm، 50mm، 85mm لتغطية اللقطات الواسعة والبورتريه.</p></div>
+    <div class="check-item"><span class="num en">MIC</span><p>DJI Mic 2 أو Rode Wireless لصوت واضح في بيئة العيادة.</p></div>
+    <div class="check-item"><span class="num en">LIGHT</span><p>Softbox + LED لإضاءة طبية احترافية ومريحة للمرضى.</p></div>
+    <div class="check-item"><span class="num en">GIMBAL</span><p>DJI RS4 لحركات كاميرا سينمائية سلسة داخل العيادة.</p></div>
+  </div>
+
+  <div class="tab-panel" id="tab-shotlist">
+    <div class="check-item"><span class="num en">01</span><p>لقطات استقبال العيادة</p></div>
+    <div class="check-item"><span class="num en">02</span><p>الدكتور يراجع الأشعة</p></div>
+    <div class="check-item"><span class="num en">03</span><p>شرح باستخدام مجسم القلب</p></div>
+    <div class="check-item"><span class="num en">04</span><p>لقطات الفريق الطبي</p></div>
+    <div class="check-item"><span class="num en">05</span><p>الأجهزة الطبية والمكتب</p></div>
+    <div class="check-item"><span class="num en">06</span><p>التجهيز قبل الكشف والكواليس</p></div>
+    <div class="check-item"><span class="num en">07</span><p>لقطات خارجية للعيادة وتفاصيل الديكور</p></div>
+    <div class="check-item"><span class="num en">08</span><p>بورتريه، الممرات، اجتماع الفريق، غرفة الكشف</p></div>
+  </div>
+
+  <div class="tab-panel" id="tab-sop">
+    <div class="check-item"><span class="num en">📸</span><p><strong style="color:#e7e2f2">المصوّر:</strong> فحص المعدات قبل التصوير، تصوير أفقي ورأسي + B-Roll إضافي، Backup فوري بعد التصوير.</p></div>
+    <div class="check-item"><span class="num en">🎬</span><p><strong style="color:#e7e2f2">المونتير:</strong> اختيار أفضل اللقطات، حذف التوقفات، إضافة ترجمة و CTA، تصدير 4K و1080×1920 للريلز.</p></div>
+    <div class="check-item"><span class="num en">🎨</span><p><strong style="color:#e7e2f2">المصمم:</strong> الالتزام بالهوية والخطوط المعتمدة، مراجعة الدقة الطبية، تجهيز ملفات النشر.</p></div>
+    <div class="check-item"><span class="num en">📅</span><p><strong style="color:#e7e2f2">مدير المحتوى:</strong> جدولة النشر، متابعة الأداء الأسبوعي، تنسيق موافقات العميل.</p></div>
+  </div>
+
+  <div class="tab-panel" id="tab-quality">
+    <div class="check-item"><span class="num en">✓</span><p>الصوت واضح والإضاءة مناسبة</p></div>
+    <div class="check-item"><span class="num en">✓</span><p>الألوان موحدة عبر كل المحتوى</p></div>
+    <div class="check-item"><span class="num en">✓</span><p>الترجمة صحيحة ودقيقة طبيًا</p></div>
+    <div class="check-item"><span class="num en">✓</span><p>عدم وجود أي معلومة طبية خاطئة</p></div>
+    <div class="check-item"><span class="num en">✓</span><p>وجود CTA واضح في كل قطعة محتوى</p></div>
+    <div class="check-item"><span class="num en">✓</span><p>استخدام شعار MONEX عند الحاجة فقط</p></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:50px;">
+    <div class="folder-tree reveal">
+      <div class="f">RAW/</div><div class="f">Edited/</div><div class="f">Reels/</div><div class="f">Stories/</div><div class="f">Photos/</div><div class="f">Designs/</div><div class="f">Thumbnails/</div><div class="f">Reports/</div><div class="f">Archive/</div>
+    </div>
+    <div class="card reveal">
+      <h4 style="font-size:16px;margin-bottom:16px;">مسار التسليم</h4>
+      <p style="color:var(--muted);line-height:2;font-size:14px;font-family:'Space Grotesk'">Research → Script → Shoot → Edit → Design → Client Approval → Schedule → Publish → Report</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GROWTH ============ -->
+<section id="growth" dir="rtl">
+  <div class="eyebrow en">13 · Growth &amp; Performance</div>
+  <h2 class="section-title reveal">النمو <span class="grad-text">والأداء</span></h2>
+  <p class="section-lead reveal">تعتمد MONEX على دورة نمو مستمرة: جذب الجمهور → بناء الثقة → تحويله إلى استفسارات → حجوزات → متابعة → توصيات من المرضى أنفسهم.</p>
+
+  <div class="funnel">
+    <div class="funnel-step reveal"><div class="t">Awareness — الوعي</div><div class="s">محتوى تعليمي يستهدف الفئة العمرية 35-65</div></div>
+    <div class="funnel-arrow">↓</div>
+    <div class="funnel-step reveal"><div class="t">Engagement — التفاعل</div><div class="s">تفاعل مع الريلز والكاروسيل التعليمي</div></div>
+    <div class="funnel-arrow">↓</div>
+    <div class="funnel-step reveal"><div class="t">Lead Generation — التواصل</div><div class="s">رسائل واتساب ونماذج عملاء محتملين</div></div>
+    <div class="funnel-arrow">↓</div>
+    <div class="funnel-step reveal"><div class="t">Remarketing — إعادة الاستهداف</div><div class="s">استهداف من شاهد الفيديو أو زار الصفحة</div></div>
+    <div class="funnel-arrow">↓</div>
+    <div class="funnel-step reveal" style="border-color:var(--teal)"><div class="t" style="color:var(--teal)">Booking — الحجز</div><div class="s">تأكيد الموعد ومتابعة ما بعد الزيارة</div></div>
+  </div>
+
+  <h3 class="reveal" style="font-size:24px;margin-top:80px;margin-bottom:6px;">قُمع <span class="grad-text">واتساب</span></h3>
+  <p class="section-lead reveal" style="margin-bottom:0">من أول رسالة تلقائية وحتى طلب تقييم جوجل بعد الزيارة.</p>
+  <div class="wa-steps" id="waSteps"></div>
+
+  <h3 class="reveal" style="font-size:24px;margin-top:80px;margin-bottom:30px;">لوحة <span class="grad-text">المؤشرات (KPIs)</span></h3>
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:60px;">
+    <div class="card reveal">
+      <h4 style="font-size:16px;margin-bottom:14px;">📊 التقرير الشهري</h4>
+      <p style="color:var(--muted);line-height:1.9;font-size:14px;">ملخص تنفيذي، أفضل 5 منشورات، أكثر فيديو مشاهدة، تحليل الجمهور، أداء الإعلانات، والتوصيات للشهر القادم.</p>
+    </div>
+    <div class="card reveal">
+      <h4 style="font-size:16px;margin-bottom:14px;">🤝 اجتماع المتابعة الشهري</h4>
+      <p style="color:var(--muted);line-height:1.9;font-size:14px;">مراجعة النتائج، مناقشة التحديات، اعتماد خطة الشهر القادم، ومراجعة المحتوى القادم قبل التنفيذ.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section id="roadmap" dir="rtl">
+  <div class="eyebrow en">14 · 12-Month Vision</div>
+  <h2 class="section-title reveal">رؤية <span class="grad-text">الاثني عشر شهرًا</span></h2>
+  <p class="section-lead reveal">بعد نجاح أول 90 يومًا وترسيخ نظام المحتوى، ننتقل لمرحلة توسيع الحضور الرقمي بالكامل.</p>
+  <div class="road-track">
+    <div class="road-item reveal"><div class="month en">Month 01–03</div><h4>تأسيس النظام</h4><p>إطلاق الهوية البصرية، تثبيت تقويم النشر، وبناء أول قاعدة ثقة رقمية عبر المحتوى التعليمي.</p></div>
+    <div class="road-item reveal"><div class="month en">Month 04–06</div><h4>تطوير الموقع الإلكتروني وتحسين SEO</h4><p>موقع احترافي يعزز الحجوزات المباشرة ويحسّن ظهور الدكتور في نتائج البحث المحلية.</p></div>
+    <div class="road-item reveal"><div class="month en">Month 07–09</div><h4>إطلاق قناة يوتيوب قوية</h4><p>محتوى طويل متعمق يبني سلطة علمية (Authority) في مجال جراحة القلب والصدر.</p></div>
+    <div class="road-item reveal"><div class="month en">Month 10–12</div><h4>Newsletter وقاعدة بيانات المرضى</h4><p>بناء قناة تواصل مباشرة مع المرضى الحاليين وإطلاق حملات موسمية للتوعية القلبية.</p></div>
+  </div>
+</section>
+
+<!-- ============ CLOSE ============ -->
+<section id="close" dir="rtl">
+  <div class="eyebrow en" style="justify-content:center">15 · Final Message</div>
+  <h2 class="reveal">هدف MONEX ليس إدارة صفحة،<br>بل بناء <span class="grad-text">علامة ثقة</span> تدوم.</h2>
+  <p class="section-lead reveal" style="margin:26px auto 0;text-align:center">نمو مستدام للعيادة، مبني على المحتوى، البيانات، والتحسين المستمر — شهرًا بعد شهر.</p>
+  <div class="close-btns reveal">
+    <a href="#" class="btn-primary en">Approve Proposal</a>
+    <a href="#" class="btn-ghost en">Schedule a Call</a>
+  </div>
+</section>
+
+<footer class="en">Prepared by MONEX — Marketing · Branding · Content Production · Performance Marketing</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------- data ---------- */
+const pillars = [
+  {t:"التثقيف الطبي",d:"شرح الأعراض والأمراض بلغة مبسطة يفهمها الجميع."},
+  {t:"تصحيح المفاهيم الخاطئة",d:"مواجهة الشائعات الطبية الشائعة حول أمراض القلب."},
+  {t:"الأسئلة الشائعة",d:"إجابات مباشرة على أكثر ما يسأله المرضى فعليًا."},
+  {t:"قصص المرضى",d:"تجارب حقيقية (بموافقة وخصوصية تامة) تبني الثقة."},
+  {t:"خلف الكواليس",d:"يوم في حياة الدكتور والفريق الطبي داخل العيادة."},
+  {t:"الجانب الإنساني",d:"القيم والدوافع خلف اختيار هذا التخصص الدقيق."},
+  {t:"المناسبات الصحية",d:"محتوى توعوي مرتبط باليوم العالمي للقلب وغيره."},
+  {t:"الإنجازات والخبرات",d:"عرض راقٍ وغير مبالغ فيه للمؤهلات والنتائج."},
+];
+const pg = document.getElementById('pillarGrid');
+pillars.forEach((p,i)=>{
+  pg.innerHTML += `<div class="card pillar-card reveal"><div class="n en">0${i+1}</div><h4>${p.t}</h4><p>${p.d}</p></div>`;
+});
+
+const mix = [
+  {l:"Reels",v:16,max:30},{l:"Long Videos",v:4,max:30},{l:"Static Posts",v:12,max:30},
+  {l:"Carousel",v:4,max:30},{l:"Stories",v:30,max:30},{l:"Live Session",v:1,max:30}
+];
+const mc = document.getElementById('mixChart');
+mix.forEach(m=>{
+  mc.innerHTML += `<div class="mix-row reveal"><div class="mix-label en">${m.l}</div><div class="mix-bar-bg"><div class="mix-bar" data-w="${(m.v/m.max)*100}"></div></div><div class="mix-val en">${m.v}/mo</div></div>`;
+});
+
+const hooks = [
+  "هل تعلم أن ضيق النفس مش دايمًا سببه الرئة؟",
+  "أكبر غلطة بيقع فيها مرضى القلب بعد التشخيص",
+  "قبل ما تركّب دعامة… شوف الفيديو ده الأول",
+  "3 علامات محدش لازم يتجاهلها",
+  "الفرق الحقيقي بين الدعامة والجراحة المفتوحة",
+  "ألم الصدر مش دايمًا قلب… إزاي تفرّق؟",
+  "إيه اللي بيحصل فعليًا جوه عملية القلب المفتوح؟",
+  "علامة واحدة ممكن تنقذ حياتك لو لاحظتها بدري",
+  "ليه الفحص الدوري أهم من العلاج نفسه؟",
+  "سؤال بيتسأل كل يوم في العيادة… وده الرد عليه",
+];
+const hs = document.getElementById('hookScroller');
+hooks.forEach((h,i)=>{
+  hs.innerHTML += `<div class="hook-card reveal"><div class="idx en">HOOK 0${i+1}</div><p>${h}</p></div>`;
+});
+
+const ctas = ["احجز موعدك الآن","اترك سؤالك تحت","احفظ الفيديو ده","شارك المعلومة دي","تابع الصفحة عشان توعية مستمرة","تواصل معنا واتساب"];
+const cc = document.getElementById('ctaCloud');
+ctas.forEach(c=>{cc.innerHTML += `<span class="cta-chip">${c}</span>`;});
+
+/* calendar 30 days sample */
+const calTypes = [
+  {type:"Reel تثقيفي",color:"#8b5cf6",hook:"هل تعلم أن...",script:"مقدمة سريعة + شرح مبسط للعرض المرضي + نصيحة عملية + دعوة للحجز.",cta:"احجز استشارتك",platform:"Instagram / TikTok",time:"7:00 مساءً",kpi:"Views + Watch Time",notes:"تصوير مسبق ضمن يوم التصوير الأول"},
+  {type:"Carousel / Infographic",color:"#2dd4bf",hook:"3 علامات لا تتجاهلها",script:"5 شرائح: مشكلة، شرح، حل، سؤال تفاعلي، CTA.",cta:"احفظ للرجوع إليه لاحقًا",platform:"Instagram",time:"1:00 ظهرًا",kpi:"Saves + Reach",notes:"تصميم موحد بالهوية البصرية"},
+  {type:"Stories (3-5)",color:"#e879f9",hook:"سؤال اليوم",script:"كواليس + سؤال تفاعلي (Poll) + نصيحة طبية سريعة + CTA للحجز.",cta:"اترك سؤالك",platform:"Instagram Stories",time:"طوال اليوم",kpi:"Replies + Taps Forward",notes:"محتوى خام غير مصمم بشكل مبالغ فيه"},
+];
+const calGrid = document.getElementById('calGrid');
+const calDetail = document.getElementById('calDetail');
+for(let d=1; d<=30; d++){
+  const t = calTypes[d % calTypes.length];
+  calGrid.innerHTML += `<div class="cal-day reveal" data-day="${d}" data-idx="${d%calTypes.length}"><div class="d en">${d}</div><div class="dot" style="background:${t.color}"></div></div>`;
+}
+function showDay(d, idx){
+  const t = calTypes[idx];
+  calDetail.classList.add('active');
+  calDetail.innerHTML = `
+    <h4 style="font-size:20px;margin-bottom:20px;">اليوم ${d} <span style="color:${t.color}">— ${t.type}</span></h4>
+    <div class="row"><div class="k en">Hook</div><div class="v">${t.hook}</div></div>
+    <div class="row"><div class="k en">Script</div><div class="v">${t.script}</div></div>
+    <div class="row"><div class="k en">CTA</div><div class="v">${t.cta}</div></div>
+    <div class="row"><div class="k en">Platform</div><div class="v en">${t.platform}</div></div>
+    <div class="row"><div class="k en">Publish Time</div><div class="v en">${t.time}</div></div>
+    <div class="row"><div class="k en">KPI Focus</div><div class="v en">${t.kpi}</div></div>
+    <div class="row"><div class="k en">Notes</div><div class="v">${t.notes}</div></div>
+  `;
+}
+calGrid.addEventListener('click', e=>{
+  const day = e.target.closest('.cal-day');
+  if(!day) return;
+  showDay(day.dataset.day, day.dataset.idx);
+  calDetail.scrollIntoView({behavior:'smooth', block:'nearest'});
+});
+
+/* whatsapp funnel */
+const waData = ["رسالة ترحيب تلقائية","جمع بيانات المريض","تحديد الموعد المناسب","تأكيد الحجز فورًا","تذكير قبل الموعد","متابعة بعد الزيارة","طلب تقييم Google"];
+const ws = document.getElementById('waSteps');
+waData.forEach((w,i)=>{ws.innerHTML += `<div class="wa-step reveal"><div class="n en">STEP ${i+1}</div><p>${w}</p></div>`;});
+
+/* kpi grid */
+const kpis = [
+  {l:"Reach",v:"+240%"},{l:"Watch Time",v:"3.2x"},{l:"Followers Growth",v:"+18%/mo"},
+  {l:"WhatsApp Msgs",v:"+65%"},{l:"Bookings",v:"+40%"},{l:"Google Reviews",v:"+12/mo"},
+  {l:"Cost Per Lead",v:"-30%"},{l:"Conversion Rate",v:"+22%"},{l:"Engagement Rate",v:"6.8%"},{l:"Views",v:"120K+"}
+];
+const kg = document.getElementById('kpiGrid');
+kpis.forEach(k=>{kg.innerHTML += `<div class="card kpi-card reveal"><div class="ic">${k.l}</div><div class="bignum grad-text">${k.v}</div></div>`;});
+
+/* ---------- cursor ---------- */
+const cursor = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
+window.addEventListener('mousemove', e=>{
+  cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px';
+  gsap.to(ring,{left:e.clientX,top:e.clientY,duration:.15});
+});
+document.querySelectorAll('a,button,.cal-day,.card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.classList.add('hover');ring.classList.add('hover');});
+  el.addEventListener('mouseleave',()=>{cursor.classList.remove('hover');ring.classList.remove('hover');});
+});
+
+/* ---------- nav scroll state ---------- */
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', ()=>{
+  navEl.classList.toggle('scrolled', window.scrollY > 60);
+  const h = document.documentElement;
+  const pct = (h.scrollTop)/(h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progress-bar').style.width = pct+'%';
+});
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ---------- reveal + counters + bars ---------- */
+window.addEventListener('load', ()=>{
+  gsap.to('.reveal', {
+    opacity:1, y:0, duration:.9, ease:'power3.out', stagger:.06,
+    scrollTrigger:{trigger:document.body, start:'top 90%'}
+  });
+  document.querySelectorAll('.reveal').forEach(el=>{
+    gsap.fromTo(el, {opacity:0,y:40}, {
+      opacity:1,y:0,duration:.9,ease:'power3.out',
+      scrollTrigger:{trigger:el, start:'top 88%'}
+    });
+  });
+  document.querySelectorAll('.mix-bar').forEach(bar=>{
+    gsap.to(bar,{width:bar.dataset.w+'%',duration:1.4,ease:'power3.out',scrollTrigger:{trigger:bar,start:'top 90%'}});
+  });
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const end = +el.dataset.count;
+    gsap.fromTo(el,{innerText:0},{
+      innerText:end, duration:1.6, ease:'power2.out', snap:{innerText:1},
+      scrollTrigger:{trigger:el,start:'top 92%'},
+      onUpdate(){el.innerText = Math.floor(el.innerText);}
+    });
+  });
+});
+
+/* ---------- loader ---------- */
+let lp = 0;
+const loadInterval = setInterval(()=>{
+  lp += Math.random()*18;
+  if(lp>100) lp=100;
+  document.getElementById('loadPct').innerText = Math.floor(lp)+'%';
+  if(lp>=100){
+    clearInterval(loadInterval);
+    setTimeout(()=>{
+      gsap.to('#loader',{opacity:0,duration:.7,onComplete:()=>{document.getElementById('loader').style.display='none';}});
+    },300);
+  }
+},220);
+</script>
+</body>
+</html>
